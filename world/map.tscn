@@ -21,3 +21,5 @@ transform = Transform( 4.14779, 0, 0, 0, 1, 0, 0, 0, 6.05482, 0, -1.12312, 0 )
 [node name="CollisionShape" type="CollisionShape" parent="Spatial/CSGBox/StaticBody"]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.524932, -0.0181604, 0.5, -0.000969611 )
 shape = SubResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Spatial"]
