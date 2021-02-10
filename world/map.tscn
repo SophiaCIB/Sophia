@@ -5,7 +5,7 @@
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 2.20444, 1, 2.11459 )
 
-[node name="Spatial" type="Node"]
+[node name="Map" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.5, 0.949208, -0.5 )
@@ -21,3 +21,5 @@ transform = Transform( 4.14779, 0, 0, 0, 1, 0, 0, 0, 6.05482, 0, -1.12312, 0 )
 [node name="CollisionShape" type="CollisionShape" parent="Spatial/CSGBox/StaticBody"]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.524932, -0.0181604, 0.5, -0.000969611 )
 shape = SubResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Spatial"]

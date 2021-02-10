@@ -15,6 +15,7 @@ var rotation_helper
 
 var MOUSE_SENSITIVITY = 0.05
 
+
 func _ready():
 	camera = $Rotation_Helper/Camera
 	rotation_helper = $Rotation_Helper
@@ -42,6 +43,8 @@ func process_input(delta):
 		input_movement_vector.x -= 1
 	if Input.is_action_pressed("movement_right"):
 		input_movement_vector.x += 1
+	if Input.is_action_just_pressed("weapon_drop"):
+		$Rotation_Helper/Weapon_Helper.dropHandedWeapon()
 
 	input_movement_vector = input_movement_vector.normalized()
 
