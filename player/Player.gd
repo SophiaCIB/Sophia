@@ -1,30 +1,51 @@
 extends KinematicBody
-
+#movement
 const GRAVITY = -40
 var vel = Vector3()
 const MAX_SPEED = 12
 const JUMP_SPEED = 15
 const ACCEL = 4.5
 var dir = Vector3()
-
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
+var playable : bool = false
 
-var camera
-var rotation_helper
+var team
+var MOUSE_SENSITIVITY : float = 0.05
 
-var MOUSE_SENSITIVITY = 0.05
+export var camera_path : NodePath 
+onready var camera = get_node(camera_path)
 
+export var weapon_helper_path : NodePath
+onready var weapon_helper : Node = get_node(weapon_helper_path)
+
+export var rotation_helper_path : NodePath
+onready var rotation_helper : Node = get_node(rotation_helper_path)
+
+#signals
+signal dropWeapon
+signal shoot
+
+func init(playable : bool, team : int):
+	self.playable = playable
+	self.team = team
+	add_to_group("team" + str(team))
+	if playable:
+		$Rotation_Helper/Recoil_Helper/Camera.make_current()
+	else:
+		$Rotation_Helper/Recoil_Helper/Camera.current = false
 
 func _ready():
-	camera = $Rotation_Helper/Camera
-	rotation_helper = $Rotation_Helper
-
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+	#signals
+	$Rotation_Helper/Recoil_Helper/Weapon_Helper.connect("dropWeapon", self, "forwardDropWeapon")
+	$Rotation_Helper/Recoil_Helper/Weapon_Helper.connect("shoot", self, "forwardShoot")
+
 func _physics_process(delta):
-	process_input(delta)
-	process_movement(delta)
+	if 	playable:
+		process_input(delta)
+		process_movement(delta)
 
 func process_input(delta):
 
@@ -44,7 +65,7 @@ func process_input(delta):
 	if Input.is_action_pressed("movement_right"):
 		input_movement_vector.x += 1
 	if Input.is_action_just_pressed("weapon_drop"):
-		$Rotation_Helper/Weapon_Helper.dropHandedWeapon()
+		$Rotation_Helper/Recoil_Helper/Weapon_Helper.dropHandedWeapon()
 
 	input_movement_vector = input_movement_vector.normalized()
 
@@ -98,5 +119,11 @@ func _input(event):
 		self.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 
 		var camera_rot = rotation_helper.rotation_degrees
-		camera_rot.x = clamp(camera_rot.x, -70, 70)
+		camera_rot.x = clamp(camera_rot.x, -90, 90)
 		rotation_helper.rotation_degrees = camera_rot
+
+func forwardDropWeapon(weapon, pos, dir):
+	emit_signal("dropWeapon", weapon, pos, dir)
+
+func forwardShoot(pos, dir):
+	emit_signal("shoot", pos, dir)

@@ -1,29 +1,53 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://player/Player.gd" type="Script" id=1]
 [ext_resource path="res://player/HUD.tscn" type="PackedScene" id=2]
+[ext_resource path="res://player/Recoil_Helper.gd" type="Script" id=3]
 [ext_resource path="res://player/Weapon_Helper.gd" type="Script" id=4]
 
 [sub_resource type="CapsuleShape" id=1]
 
+[sub_resource type="CapsuleMesh" id=2]
+
 [node name="Player" type="KinematicBody"]
 transform = Transform( 1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0 )
 script = ExtResource( 1 )
+camera_path = NodePath("Rotation_Helper/Recoil_Helper/Camera")
+weapon_helper_path = NodePath("Rotation_Helper/Recoil_Helper/Weapon_Helper")
+rotation_helper_path = NodePath("Rotation_Helper")
 
 [node name="Rotation_Helper" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2573, 0 )
 
-[node name="Camera" type="Camera" parent="Rotation_Helper"]
-transform = Transform( 0.555556, 0, 0, 0, 0.555556, 0, 0, 0, 0.555556, 0, 0, 0 )
+[node name="Recoil_Helper" type="Spatial" parent="Rotation_Helper"]
+script = ExtResource( 3 )
+weaponHelperPath = NodePath("Weapon_Helper")
 
-[node name="HUD" parent="Rotation_Helper/Camera" instance=ExtResource( 2 )]
-
-[node name="Weapon_Helper" type="Spatial" parent="Rotation_Helper"]
+[node name="Weapon_Helper" type="Spatial" parent="Rotation_Helper/Recoil_Helper"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2242, -0.268905, -0.501144 )
 script = ExtResource( 4 )
+playerPath = NodePath("../../..")
+rotationHelperPath = NodePath("../..")
+rayCastPath = NodePath("../Camera/RayCast")
+recoilHelperPath = NodePath("..")
 
-[node name="CSGMesh" type="CSGMesh" parent="Rotation_Helper"]
+[node name="Camera" type="Camera" parent="Rotation_Helper/Recoil_Helper"]
+transform = Transform( 0.555556, 0, 0, 0, 0.555556, 0, 0, 0, 0.555556, 0, 0, 0 )
+current = true
+
+[node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
+
+[node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
+transform = Transform( 1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0 )
+enabled = true
+cast_to = Vector3( 0, 0, -50 )
+collide_with_areas = true
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.271445, 1.5, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.5, 0 )
 shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 1.5, 0 )
+mesh = SubResource( 2 )
+material/0 = null
