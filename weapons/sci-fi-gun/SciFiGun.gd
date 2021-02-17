@@ -42,7 +42,7 @@ func _ready():
 	reload_time = 2.5 
 	movement_speed = 30 
 	kill_award = 100 
-	damage = 100 
+	base_damage = 100 
 	armor_penetration = 100
 	bullets_left_in_mag = magazine_capacity
 	recoil_pattern = PoolVector2Array(
@@ -55,9 +55,9 @@ func _ready():
 			Vector2(0, 2), Vector2(0, 2),
 			Vector2(0, 2), Vector2(0, 2),
 			Vector2(0, 2), Vector2(0, 2),
-			Vector2(2, 2), Vector2(2, 2),
-			Vector2(2, 2), Vector2(2, 2),
-			Vector2(2, 2), Vector2(2, 2),
+			Vector2(20, 2), Vector2(20, 2),
+			Vector2(20, 2), Vector2(20, 2),
+			Vector2(20, 2), Vector2(20, 2),
 			Vector2(0, 2), Vector2(0, 2),
 			Vector2(0, 2), Vector2(0, 2),
 			Vector2(0, 2), Vector2(0, 2),

@@ -1,10 +1,9 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://world/Maps/Hotel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://world/Maps/test.tscn" type="PackedScene" id=1]
 [ext_resource path="res://world/map.gd" type="Script" id=2]
 
 [node name="Map" type="Node"]
 script = ExtResource( 2 )
 
-[node name="Map_Helper" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.158867, 0.00437737, -0.711398 )
+[node name="Spatial" parent="." instance=ExtResource( 1 )]

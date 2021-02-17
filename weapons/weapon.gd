@@ -23,7 +23,7 @@ var movement_speed : int = 100
 #percent
 var kill_award : int = 0
 #percent
-var damage : int = 0
+var base_damage : int = 0
 #percent
 var armor_penetration : int = 0
 #last time a shot was fired

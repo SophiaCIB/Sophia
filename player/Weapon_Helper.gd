@@ -4,6 +4,8 @@ var secondaryWeapon : Node
 var knife : Node
 var handedWeapon : Node
 
+onready var bullet_decal = preload("res://weapons/bullet/bullet_impact.tscn")
+
 var baseKnockback : Vector2 = Vector2(2, 0)
 export var playerPath : NodePath
 onready var player : Node = get_node(playerPath)
@@ -35,6 +37,10 @@ func setMainWeapon(weapon) -> void:
 	mainWeapon = get_node(weapon.name)
 	handedWeapon = mainWeapon
 
+func setSecondaryWeapon(weapon) -> void:
+	add_child(weapon)
+	secondaryWeapon = get_node(weapon.name)
+
 func dropHandedWeapon() -> void:
 	#handedWeapon.queue_free()
 	#has to be changed to generic weapon
@@ -44,20 +50,73 @@ func dropHandedWeapon() -> void:
 	var dir = Vector2(-player.rotation_degrees.y, rotationHelper.rotation_degrees.x)
 	emit_signal("dropWeapon", weapon, pos, dir) 
 
-func setSecondaryWeapon(weapon) -> void:
-	add_child(weapon)
-	secondaryWeapon = get_node(weapon.name)
-
 func recoil() -> void:
-	recoilHelper.rotation_degrees.x += baseKnockback.x + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].y / 2 
-	recoilHelper.rotation_degrees.y += baseKnockback.y + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].x / 2
+	#should be between 0 and 1
+	var ghostMultiplier : float = 0.5
+	recoilHelper.rotation_degrees.x += baseKnockback.x + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].y * ghostMultiplier
+	recoilHelper.rotation_degrees.y += baseKnockback.y + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].x * ghostMultiplier
+	rayCast.rotation_degrees.x += handedWeapon.recoil_pattern[handedWeapon.latest_recoil].y * (1 - ghostMultiplier)
+	rayCast.rotation_degrees.y += handedWeapon.recoil_pattern[handedWeapon.latest_recoil].x * (1- ghostMultiplier)
 	handedWeapon.latest_recoil += 1
 
 func checkForHit() -> void:
-	if rayCast.is_colliding():
-		var collider = rayCast.get_collider()
-		if collider.is_in_group("team" + str(1 - player.team)):
-			collider.queue_free()
+	var dmg : float = handedWeapon.base_damage
+	var hit_objects : Array = []
+	var excluded_objects : Array = [self]
+	var space_state = get_world().direct_space_state
+	#between 0 and 1
+	var strength_of_penetration : float = 0.5
+	
+	#ray cast pointed away
+	while rayCast.is_colliding():
+		hit_objects.append({
+			"object": rayCast.get_collider(), 
+			"entry_point": rayCast.get_collision_point(),
+			"exit_point": null,
+			"length": 0,
+			"bullet_damage": 0
+		})
+		rayCast.add_exception(hit_objects.back()["object"])
+		rayCast.force_raycast_update()
+	rayCast.clear_exceptions()
+
+	#ray cast pointed towards
+	hit_objects.invert()
+	for n in range(hit_objects.size() - 1):
+		var object : Dictionary = hit_objects[n]
+		var next : Dictionary = hit_objects[n + 1]
+		next["exit_point"] = space_state.intersect_ray(
+			object["entry_point"], 
+			rayCast.global_transform.origin, 
+			excluded_objects
+		)["position"]
+		excluded_objects.append(next["object"])
+		next["length"] = (next["entry_point"] - next["exit_point"]).length()
+		#damage calculation
+		dmg *= pow(strength_of_penetration, next["length"])
+		next["bullet_damage"] = dmg
+	hit_objects.invert()
+
+	#debug
+	var hud = get_node("../Camera/HUD")
+	hud.points = hit_objects
+
+	#hit player
+	for object in hit_objects:
+		print(object)
+		if object["object"].is_in_group("team" + str(1 - player.team)):
+			#object.hit()
+			print("hit")
+		else:
+			#addDecal(object["object"])
+			# add bullet hole decal
+			print("decal")	
+
+func addDecal(collider) -> void:
+	var decal = bullet_decal.instance()
+	collider.add_child(decal)
+	decal.global_transform.origin = rayCast.get_collision_point()
+	decal.look_at(rayCast.get_collision_point() + rayCast.get_collision_normal(), Vector3.UP)
 
 func checkForReload() -> bool:
 	if handedWeapon.bullets_left_in_mag > 0:
@@ -105,13 +164,9 @@ func shoot() -> void:
 			return
 		handedWeapon.decrease_latest_recoil = false
 		prepareShoot()
-		#position and rotation of Bullet Exit
 		notifyShoot()
-		#knockback
-		recoil()
-		#print(recoilHelper.rotation_degrees.x)
-		#print(clamp(rotationHelper.rotation_degrees.x + recoilHelper.rotation_degrees.x, -90, 90))
 		checkForHit()
+		recoil()
 	elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:
 		handedWeapon.reload()
 	

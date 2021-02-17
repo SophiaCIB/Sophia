@@ -22,6 +22,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2573, 0 )
 [node name="Recoil_Helper" type="Spatial" parent="Rotation_Helper"]
 script = ExtResource( 3 )
 weaponHelperPath = NodePath("Weapon_Helper")
+rayCastPath = NodePath("Camera/RayCast")
 
 [node name="Weapon_Helper" type="Spatial" parent="Rotation_Helper/Recoil_Helper"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2242, -0.268905, -0.501144 )
@@ -36,6 +37,7 @@ transform = Transform( 0.555556, 0, 0, 0, 0.555556, 0, 0, 0, 0.555556, 0, 0, 0 )
 current = true
 
 [node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
+camera_path = NodePath("..")
 
 [node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
 transform = Transform( 1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0 )
