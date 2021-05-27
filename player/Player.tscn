@@ -10,11 +10,11 @@
 [sub_resource type="CapsuleMesh" id=2]
 
 [node name="Player" type="KinematicBody"]
-transform = Transform( 1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0 )
 script = ExtResource( 1 )
 camera_path = NodePath("Rotation_Helper/Recoil_Helper/Camera")
 weapon_helper_path = NodePath("Rotation_Helper/Recoil_Helper/Weapon_Helper")
 rotation_helper_path = NodePath("Rotation_Helper")
+hud_path = NodePath("Rotation_Helper/Recoil_Helper/Camera/HUD")
 
 [node name="Rotation_Helper" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2573, 0 )
@@ -40,7 +40,6 @@ current = true
 camera_path = NodePath("..")
 
 [node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
-transform = Transform( 1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( 0, 0, -50 )
 collide_with_areas = true

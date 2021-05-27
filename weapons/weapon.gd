@@ -24,7 +24,9 @@ var movement_speed : int = 100
 var kill_award : int = 0
 #percent
 var base_damage : int = 0
-#percent
+#max distance a bullet can travel, in meters
+var damage_falloff : int = 0
+#health
 var armor_penetration : int = 0
 #last time a shot was fired
 var last_shot : float = 0
@@ -34,6 +36,7 @@ var recoil_pattern : PoolVector2Array
 var latest_recoil : int = 0
 var decrease_latest_recoil : bool = false
 var decrese_recoil_steps : Vector2 = Vector2(0.0, 0.0)
+
 
 export var recoil_helper_path : NodePath
 onready var recoil_helper : Node = get_node(recoil_helper_path)

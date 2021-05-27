@@ -8,9 +8,14 @@ const ACCEL = 4.5
 var dir = Vector3()
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
-var playable : bool = false
 
-var team
+# Player Stats
+var playable : bool = false
+var health : float = 100
+var dead : bool = false
+var team : int
+
+# Player Config
 var MOUSE_SENSITIVITY : float = 0.05
 
 export var camera_path : NodePath 
@@ -22,25 +27,32 @@ onready var weapon_helper : Node = get_node(weapon_helper_path)
 export var rotation_helper_path : NodePath
 onready var rotation_helper : Node = get_node(rotation_helper_path)
 
+export var hud_path : NodePath
+onready var hud : Node = get_node(hud_path)
+
 #signals
 signal dropWeapon
 signal shoot
+
+
 
 func init(playable : bool, team : int):
 	self.playable = playable
 	self.team = team
 	add_to_group("team" + str(team))
+	add_to_group("hitable")
 	if playable:
+		#cannot be changed to camera.make_current() because of init, maybe it has to be moved into _ready()
 		$Rotation_Helper/Recoil_Helper/Camera.make_current()
 	else:
 		$Rotation_Helper/Recoil_Helper/Camera.current = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
+	hud.health_status_changed(health)
 	#signals
-	$Rotation_Helper/Recoil_Helper/Weapon_Helper.connect("dropWeapon", self, "forwardDropWeapon")
-	$Rotation_Helper/Recoil_Helper/Weapon_Helper.connect("shoot", self, "forwardShoot")
+	weapon_helper.connect("dropWeapon", self, "forwardDropWeapon")
+	weapon_helper.connect("shoot", self, "forwardShoot")
 
 func _physics_process(delta):
 	if 	playable:
@@ -48,7 +60,6 @@ func _physics_process(delta):
 		process_movement(delta)
 
 func process_input(delta):
-
 	# ----------------------------------
 	# Walking
 	dir = Vector3()
@@ -65,7 +76,7 @@ func process_input(delta):
 	if Input.is_action_pressed("movement_right"):
 		input_movement_vector.x += 1
 	if Input.is_action_just_pressed("weapon_drop"):
-		$Rotation_Helper/Recoil_Helper/Weapon_Helper.dropHandedWeapon()
+		weapon_helper.dropHandedWeapon()
 
 	input_movement_vector = input_movement_vector.normalized()
 
@@ -119,7 +130,7 @@ func _input(event):
 		self.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
 
 		var camera_rot = rotation_helper.rotation_degrees
-		camera_rot.x = clamp(camera_rot.x, -90, 90)
+		camera_rot.x = clamp(camera_rot.x, -89.99, 89.99)
 		rotation_helper.rotation_degrees = camera_rot
 
 func forwardDropWeapon(weapon, pos, dir):
@@ -127,3 +138,14 @@ func forwardDropWeapon(weapon, pos, dir):
 
 func forwardShoot(pos, dir):
 	emit_signal("shoot", pos, dir)
+
+func hit(damage : float) -> void:
+	health -= damage
+	if health <= 0:
+		dead = true
+		health = 0
+
+
+func spawn() -> void:
+	translation = GlobalMapInformation.get_player_spawn(self)
+	dead = false

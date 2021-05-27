@@ -64,17 +64,31 @@ func checkForHit() -> void:
 	var hit_objects : Array = []
 	var excluded_objects : Array = [self]
 	var space_state = get_world().direct_space_state
-	#between 0 and 1
-	var strength_of_penetration : float = 0.5
 	
+	#between exc(0) and exc(1)
+	# 1 = good penetration / 0 = weak penetration 
+	var weapon_strength_of_penetration : float = handedWeapon.armor_penetration
+	
+	#between exc(0) and inc[1]
+	# 1 = nicely penetratable / 0 = hardly penetratable
+	# has to be adjusted to custom material type of hit object
+	var object_penetrability : float = 0.5
+
+	var damage_falloff : int = handedWeapon.damage_falloff
+	
+	#set max shooting distance
+	rayCast.cast_to = Vector3(0, 0, -damage_falloff)
+
 	#ray cast pointed away
 	while rayCast.is_colliding():
 		hit_objects.append({
 			"object": rayCast.get_collider(), 
 			"entry_point": rayCast.get_collision_point(),
+			"entry_point_normal": rayCast.get_collision_normal(),
 			"exit_point": null,
+			"exit_point_normal": null,
 			"length": 0,
-			"bullet_damage": 0
+			"bullet_damage": 0,
 		})
 		rayCast.add_exception(hit_objects.back()["object"])
 		rayCast.force_raycast_update()
@@ -82,41 +96,54 @@ func checkForHit() -> void:
 
 	#ray cast pointed towards
 	hit_objects.invert()
-	for n in range(hit_objects.size() - 1):
+	for n in range(hit_objects.size()):
 		var object : Dictionary = hit_objects[n]
-		var next : Dictionary = hit_objects[n + 1]
-		next["exit_point"] = space_state.intersect_ray(
-			object["entry_point"], 
+		var ray : Dictionary = space_state.intersect_ray(
+			#object["entry_point"],
+			rayCast.global_transform.origin - rayCast.global_transform.basis.z * damage_falloff, 
 			rayCast.global_transform.origin, 
 			excluded_objects
-		)["position"]
-		excluded_objects.append(next["object"])
-		next["length"] = (next["entry_point"] - next["exit_point"]).length()
-		#damage calculation
-		dmg *= pow(strength_of_penetration, next["length"])
-		next["bullet_damage"] = dmg
+		)
+		object["exit_point"] = ray["position"]
+		object["exit_point_normal"] = ray["normal"]
+		excluded_objects.append(object["object"])
+		object["length"] = (object["entry_point"] - object["exit_point"]).length()
 	hit_objects.invert()
 
 	#debug
-	var hud = get_node("../Camera/HUD")
-	hud.points = hit_objects
+	var hud = get_node("../Camera/HUD") #has to be node path
+	hud.set_points(hit_objects)
+	#hud.points = [{"entry_point": rayCast.global_transform.origin + -rayCast.global_transform.basis.z * 100, "exit_point": null}]
 
 	#hit player
+	var amount_of_decals : int = 2
 	for object in hit_objects:
-		print(object)
-		if object["object"].is_in_group("team" + str(1 - player.team)):
+		#damage calculation
+		if not dmg > 0:
+			amount_of_decals -= 1
+		#print(object) "team" + str(1 - player.team)
+		if object["object"].is_in_group("hitable"):
 			#object.hit()
 			print("hit")
+			object["object"].hit(dmg)
 		else:
-			#addDecal(object["object"])
-			# add bullet hole decal
-			print("decal")	
+			addDecal(object, amount_of_decals)
+		object["bullet_damage"] = dmg
+		dmg *= pow(object_penetrability * weapon_strength_of_penetration, object["length"])
+			
 
-func addDecal(collider) -> void:
-	var decal = bullet_decal.instance()
-	collider.add_child(decal)
-	decal.global_transform.origin = rayCast.get_collision_point()
-	decal.look_at(rayCast.get_collision_point() + rayCast.get_collision_normal(), Vector3.UP)
+func addDecal(object : Dictionary, amount_of_decals: int) -> void:
+	if amount_of_decals > 0:
+		var entry_decal = bullet_decal.instance()
+		object["object"].add_child(entry_decal)
+		entry_decal.global_transform.origin = object["entry_point"]
+		entry_decal.look_at(object["entry_point"] + object["entry_point_normal"], Vector3.UP)
+		
+		if amount_of_decals > 1:
+			var exit_decal = bullet_decal.instance()
+			object["object"].add_child(exit_decal)
+			exit_decal.global_transform.origin = object["exit_point"]
+			exit_decal.look_at(object["exit_point"] + object["exit_point_normal"], Vector3.UP)
 
 func checkForReload() -> bool:
 	if handedWeapon.bullets_left_in_mag > 0:
