@@ -10,6 +10,9 @@ onready var camera : Node = get_node(camera_path)
 export var healt_bar_path : NodePath
 onready var health_bar : Node = get_node(healt_bar_path)
 
+export var player_path : NodePath
+onready var player : Node = get_node(player_path)
+
 #drawing strings
 var font = load('res://player/HUD/fonts/standard.tres')
 
@@ -33,7 +36,7 @@ func _draw():
 					color)
 	
 	#draw other players tags
-	for player in GameState.team_a:
+	for player in GlobalPlayersInformation.other_players:
 		var pos = player.translation + Vector3(0, 2, 0)
 		if not camera.is_position_behind(pos):
 			draw_string(

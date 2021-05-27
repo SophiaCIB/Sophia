@@ -4,7 +4,7 @@ enum team {A, B}
 
 func _ready():
 	addPlayer(true, team.A)
-	#addPlayer(false, team.B)
+	addPlayer(false, team.B)
 	#addPlayer(false, team.B)
 	#addPlayer(false, team.ATTACKER)
 	#setWinCondition('res://game/defuse.json')

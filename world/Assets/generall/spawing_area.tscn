@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://world/Assets/generall/spawing_area.gd" type="Script" id=1]
-
-[node name="spawing_area" type="Area"]
-transform = Transform( 1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0, 0 )
-script = ExtResource( 1 )

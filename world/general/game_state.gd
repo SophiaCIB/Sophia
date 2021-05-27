@@ -25,10 +25,15 @@ func getSide(player_team : int) -> int:
 		team.B: return side_team_b
 	return -1
 
+func get_team(player_team : int) -> Array:
+	match player_team:
+		team.A: return team_a
+		team.B: return team_b
+	return []
+
 func changed() -> void:
 	team_a = get_tree().get_nodes_in_group("team0")
 	team_b = get_tree().get_nodes_in_group("team1")
-	print(team_a, team_b)
 
 func team_a_is_alive() -> bool:
 	for player in team_a:

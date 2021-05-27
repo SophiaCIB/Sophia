@@ -38,6 +38,7 @@ current = true
 
 [node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
 camera_path = NodePath("..")
+player_path = NodePath("../../../..")
 
 [node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
 enabled = true

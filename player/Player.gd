@@ -57,7 +57,7 @@ func _ready():
 func _physics_process(delta):
 	if 	playable:
 		process_input(delta)
-		process_movement(delta)
+	process_movement(delta)
 
 func process_input(delta):
 	# ----------------------------------
