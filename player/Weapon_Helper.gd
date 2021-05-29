@@ -28,7 +28,7 @@ func _ready() -> void:
 	setMainWeapon(scifigun)
 
 func _process(delta) -> void:
-	if player.playable:
+	if player.is_network_master():
 		shoot()
 	decreaseLatestRecoil()
 
@@ -186,16 +186,17 @@ func decreaseLatestRecoil() -> void:
 		# print("set back to 0")
 
 func shoot() -> void:
-	if Input.is_action_pressed("weapon_shoot") && handedWeapon.next_shot && !handedWeapon.reloading:
-		if checkForReload():
-			return
-		handedWeapon.decrease_latest_recoil = false
-		prepareShoot()
-		notifyShoot()
-		checkForHit()
-		recoil()
-	elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:
-		handedWeapon.reload()
-	
-	if !Input.is_action_pressed("weapon_shoot"):
-		handedWeapon.decrease_latest_recoil = true
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		if Input.is_action_pressed("weapon_shoot") && handedWeapon.next_shot && !handedWeapon.reloading:
+			if checkForReload():
+				return
+			handedWeapon.decrease_latest_recoil = false
+			prepareShoot()
+			notifyShoot()
+			checkForHit()
+			recoil()
+		elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:
+			handedWeapon.reload()
+		
+		if !Input.is_action_pressed("weapon_shoot"):
+			handedWeapon.decrease_latest_recoil = true

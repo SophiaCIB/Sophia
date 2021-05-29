@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://game/console/console.gd" type="Script" id=1]
+[ext_resource path="res://player/HUD/fonts/standard.tres" type="DynamicFont" id=2]
+
+[sub_resource type="Theme" id=3]
+default_font = ExtResource( 2 )
+
+[node name="console" type="Control"]
+light_mask = 524288
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -643.0
+margin_top = -362.0
+margin_right = 643.0
+margin_bottom = 362.0
+mouse_filter = 2
+theme = SubResource( 3 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="grid" type="GridContainer" parent="panel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1279.0
+margin_bottom = 717.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="output" type="RichTextLabel" parent="panel/grid"]
+margin_right = 1272.0
+margin_bottom = 645.0
+focus_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "DEBUG
+"
+scroll_following = true
+selection_enabled = true
+
+[node name="input" type="LineEdit" parent="panel/grid"]
+margin_top = 649.0
+margin_right = 1272.0
+margin_bottom = 710.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="text_entered" from="panel/grid/input" to="." method="_on_input_text_entered"]

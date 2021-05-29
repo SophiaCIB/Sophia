@@ -37,8 +37,11 @@ transform = Transform( 0.555556, 0, 0, 0, 0.555556, 0, 0, 0, 0.555556, 0, 0, 0 )
 current = true
 
 [node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
+visible = false
+light_mask = 2
+mouse_filter = 1
 camera_path = NodePath("..")
-player_path = NodePath("../../../..")
+healt_bar_path = NodePath("")
 
 [node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
 enabled = true

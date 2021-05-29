@@ -21,13 +21,14 @@ _global_script_class_icons={
 [application]
 
 config/name="Sophia"
-run/main_scene="res://world/gameStateManager.tscn"
+run/main_scene="res://game/general/gameStateManager.tscn"
 
 [autoload]
 
-GameState="*res://world/general/game_state.gd"
+GameState="*res://game/general/game_state.gd"
 GlobalPlayersInformation="*res://player/global_information.gd"
-GlobalMapInformation="*res://world/general/global_map_information.gd"
+GlobalMapInformation="*res://game/general/global_map_information.gd"
+ServerState="*res://game/server/serverState.gd"
 
 [display]
 
@@ -84,6 +85,21 @@ weapon_drop={
 weapon_reload={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":82,"unicode":0,"echo":false,"script":null)
+ ]
+}
+open_debug_console={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":77,"unicode":0,"echo":false,"script":null)
+ ]
+}
+stack_up_debug_console={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777232,"unicode":0,"echo":false,"script":null)
+ ]
+}
+stack_down_debug_console={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"unicode":0,"echo":false,"script":null)
  ]
 }
 
