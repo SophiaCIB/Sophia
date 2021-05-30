@@ -6,6 +6,7 @@ func _ready():
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	set_network_master(1)
 	#init_game()
 
 func attach_weapon(weapon, pos, dir) -> void:
@@ -13,7 +14,7 @@ func attach_weapon(weapon, pos, dir) -> void:
 	weapon.dropWeapon(dir)
 	add_child(weapon)
 
-remote func add_player(team : int, player_id : int) -> void:
+func add_player(team : int, player_id : int) -> void:
 	var player = load("res://player/Player.tscn").instance()
 	player.set_name(str(player_id))
 	player.set_network_master(player_id)
@@ -27,13 +28,15 @@ remote func add_player(team : int, player_id : int) -> void:
 	#player.spawn()
 	if not player_id == get_tree().get_network_unique_id():
 		#GlobalPlayersInformation.other_players.push_back(get_node(player.name))
-		GameState.changed()
+		pass
+	GameState.changed()
 
 func set_win_condition(path : String) -> void:
 	var file = File.new()
 	file.open(path, file.READ)
 	var text = file.get_as_text()
 	var json = JSON.parse(text)
+	#TODO
 
 func spawn_all_player():
 	for player in GameState.team_a:
@@ -41,22 +44,34 @@ func spawn_all_player():
 	for player in GameState.team_b:
 		player.spawn()
 
-func restart_round():
+puppet func restart_round():
 	GlobalMapInformation.free_spawns()
 	spawn_all_player()
-	#$Map_Helper.reload_current_scene()
+	#TODO
+	#reset ammunition etc
+	#reset scene
 
 func _process(delta) -> void:
 	if not GameState.team_a_is_alive():
 		restart_round()
 	elif not GameState.team_b_is_alive():
 		restart_round()
+	pass
 
-remote func init_game():
+func init_game():
 	print("init game")
 	add_player(team.A, get_tree().get_network_unique_id())
 	for player in ServerState.player_info:
 		add_player(team.B, player)
+	restart_round()
+
+func reset_game():
+	restart_round()
+	for player in GameState.team_a:
+		player.queue_free()
+	for player in GameState.team_b:
+		player.queue_free()
+	GameState.changed()
 
 func _player_connected(id):
 	add_player(team.B, id)

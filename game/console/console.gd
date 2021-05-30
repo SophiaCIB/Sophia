@@ -120,11 +120,11 @@ func _connected_ok():
 	output_text("conntected to server")
 
 func _server_disconnected():
-	output_text("disconnected")
+	output_text("server closed")
 
 func _connected_fail():
 	output_text("cannot reach server")
-
+	
 
 func _physics_process(delta):
 	process_input()

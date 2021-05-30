@@ -61,7 +61,6 @@ func process_input(delta):
 	dir = Vector3()
 	var cam_xform = camera.get_global_transform()
 	if is_network_master():
-		print("Hello")
 		var input_movement_vector = Vector2()
 		if Input.is_action_just_released("open_debug_console"):
 			skip = true
@@ -99,8 +98,8 @@ func process_input(delta):
 			else:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		# ----------------------------------
-		rset("puppet_dir", dir)
-		rset("puppet_vel", vel)
+		rset_unreliable("puppet_dir", dir)
+		rset_unreliable("puppet_vel", vel)
 	else:
 		dir = puppet_dir
 		vel = puppet_vel
@@ -155,6 +154,5 @@ func spawn() -> void:
 	dead = false
 
 func _physics_process(delta):
-	print(is_network_master())
 	process_input(delta)
 	process_movement(delta)

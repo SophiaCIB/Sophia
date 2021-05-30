@@ -36,15 +36,21 @@ func changed() -> void:
 	team_b = get_tree().get_nodes_in_group("team1")
 
 func team_a_is_alive() -> bool:
-	for player in team_a:
-		if not player.dead:
-			return true
-	return false
+	if team_a.size() > 0:
+		for player in team_a:
+			if not player.dead:
+				return true
+		return false
+	else:
+		return true
 
 func team_b_is_alive() -> bool:
-	for player in team_b:
-		if not player.dead:
-			return true
-	return false
+	if team_b.size() > 0:
+		for player in team_a:
+			if not player.dead:
+				return true
+		return false
+	else:
+		return true
 		
 	

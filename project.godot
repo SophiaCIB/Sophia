@@ -25,7 +25,7 @@ run/main_scene="res://game/general/gameStateManager.tscn"
 
 [autoload]
 
-GameState="*res://game/general/game_state.gd"
+GameState="*res://game/general/gameState.gd"
 GlobalPlayersInformation="*res://player/global_information.gd"
 GlobalMapInformation="*res://game/general/global_map_information.gd"
 ServerState="*res://game/server/serverState.gd"

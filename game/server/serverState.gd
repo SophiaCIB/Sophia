@@ -13,6 +13,7 @@ func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	set_network_master(1)
 	#start(2)
 
 # Player info, associate ID to data
@@ -59,6 +60,8 @@ func connect_to(SERVER_IP : String, SERVER_PORT : int) -> String:
 	get_tree().network_peer = peer
 	return 'connecting to server'
 
-master func init_game() -> String:
+puppet func init_game() -> String:
+	if is_network_master():
+		rpc("init_game")
 	get_tree().get_root().get_node("GameStateManager").init_game()
 	return "initalzing game"
