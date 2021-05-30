@@ -28,8 +28,7 @@ func _ready() -> void:
 	setMainWeapon(scifigun)
 
 func _process(delta) -> void:
-	if player.is_network_master():
-		shoot()
+	shoot()
 	decreaseLatestRecoil()
 
 func setMainWeapon(weapon) -> void:
@@ -50,7 +49,7 @@ func dropHandedWeapon() -> void:
 	var dir = Vector2(-player.rotation_degrees.y, rotationHelper.rotation_degrees.x)
 	emit_signal("dropWeapon", weapon, pos, dir) 
 
-func recoil() -> void:
+remotesync func recoil() -> void:
 	#should be between 0 and 1
 	var ghostMultiplier : float = 0.5
 	recoilHelper.rotation_degrees.x += baseKnockback.x + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].y * ghostMultiplier
@@ -59,7 +58,7 @@ func recoil() -> void:
 	rayCast.rotation_degrees.y += handedWeapon.recoil_pattern[handedWeapon.latest_recoil].x * (1- ghostMultiplier)
 	handedWeapon.latest_recoil += 1
 
-func checkForHit() -> void:
+remotesync func checkForHit() -> void:
 	var dmg : float = handedWeapon.base_damage
 	var hit_objects : Array = []
 	var excluded_objects : Array = [self]
@@ -158,13 +157,13 @@ func checkForReload() -> bool:
 		print(handedWeapon.bullets_left_in_mag, "/", handedWeapon.spare_bullets)
 		return true
 
-func notifyShoot() -> void:
+remotesync func notifyShoot() -> void:
 	var pos = handedWeapon.getBulletTransform()
 	var dir = Vector2(-player.rotation_degrees.y, rotationHelper.rotation_degrees.x)
 	#signal for spawning bullet
 	emit_signal("shoot", pos, dir)
 
-func prepareShoot() -> void:
+remotesync func prepareShoot() -> void:
 	handedWeapon.next_shot = false
 	handedWeapon.last_shot = 0
 	handedWeapon.setAnimation()
@@ -186,17 +185,24 @@ func decreaseLatestRecoil() -> void:
 		# print("set back to 0")
 
 func shoot() -> void:
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED && is_network_master():
 		if Input.is_action_pressed("weapon_shoot") && handedWeapon.next_shot && !handedWeapon.reloading:
 			if checkForReload():
 				return
 			handedWeapon.decrease_latest_recoil = false
-			prepareShoot()
-			notifyShoot()
-			checkForHit()
-			recoil()
+
+			#prepareShoot()
+			#notifyShoot()
+			#checkForHit()
+			#recoil()
+			rpc_unreliable("prepareShoot")
+			rpc_unreliable("notifyShoot")
+			rpc_unreliable("checkForHit")
+			#rpc_unreliable("recoil")
 		elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:
-			handedWeapon.reload()
+			#handedWeapon.reload()
+			rpc_unreliable("handedWeapon.reload")
 		
 		if !Input.is_action_pressed("weapon_shoot"):
-			handedWeapon.decrease_latest_recoil = true
+			#handedWeapon.decrease_latest_recoil = true
+			rset_unreliable("handedWeapon.decrease_latest_recoil", true)

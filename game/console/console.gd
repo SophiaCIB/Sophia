@@ -95,6 +95,7 @@ func process_input():
 		if stack_pointer - 1 >= 0:
 			stack_pointer -= 1
 		input.text = stack[stack_pointer]
+		input.grab_focus()
 	if Input.is_action_just_pressed("stack_down_debug_console"):
 		if stack_pointer + 1 < stack.size():
 			stack_pointer += 1
@@ -102,6 +103,7 @@ func process_input():
 		elif stack_pointer + 1 == stack.size():
 			stack_pointer = stack.size()
 			input.text = ""
+		input.grab_focus()
 
 func exit() -> String:
 	get_tree().quit()

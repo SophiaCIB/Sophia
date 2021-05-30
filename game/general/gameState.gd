@@ -46,7 +46,7 @@ func team_a_is_alive() -> bool:
 
 func team_b_is_alive() -> bool:
 	if team_b.size() > 0:
-		for player in team_a:
+		for player in team_b:
 			if not player.dead:
 				return true
 		return false

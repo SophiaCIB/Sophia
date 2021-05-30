@@ -3,12 +3,12 @@ extends KinematicBody
 var skip : bool = false
 const GRAVITY = -40
 var vel = Vector3()
-var puppet_vel = Vector3()
+puppet var puppet_vel = Vector3()
 const MAX_SPEED = 12
 const JUMP_SPEED = 15
 const ACCEL = 4.5
 var dir = Vector3()
-var puppet_dir = Vector3()
+puppet var puppet_dir = Vector3()
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
 
@@ -38,8 +38,10 @@ signal shoot
 
 
 
-func init(team : int):
+func init(player_id : int, team : int):
 	self.team = team
+	set_network_master(player_id)
+	set_name(str(player_id))
 	add_to_group("team" + str(team))
 	add_to_group("hitable")
 	if is_network_master():
@@ -84,10 +86,10 @@ func process_input(delta):
 
 		input_movement_vector = input_movement_vector.normalized()
 
-	# Basis vectors are already normalized.
+		# Basis vectors are already normalized.
 		dir += -cam_xform.basis.z * input_movement_vector.y
 		dir += cam_xform.basis.x * input_movement_vector.x
-	# ----------------------------------
+		# ----------------------------------
 
 	
 		# Capturing/Freeing the cursor
@@ -98,8 +100,8 @@ func process_input(delta):
 			else:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		# ----------------------------------
-		rset_unreliable("puppet_dir", dir)
-		rset_unreliable("puppet_vel", vel)
+		rset("puppet_dir", dir)
+		rset("puppet_vel", vel)
 	else:
 		dir = puppet_dir
 		vel = puppet_vel
@@ -129,12 +131,15 @@ func process_movement(delta):
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED and is_network_master():
-		rotation_helper.rotate_x(deg2rad(event.relative.y * MOUSE_SENSITIVITY * -1))
-		self.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+		rpc_unreliable("rotate_on_mouse_input", event.relative.x, event.relative.y)
 
-		var camera_rot = rotation_helper.rotation_degrees
-		camera_rot.x = clamp(camera_rot.x, -89.99, 89.99)
-		rotation_helper.rotation_degrees = camera_rot
+remotesync func rotate_on_mouse_input(event_x, event_y):
+	rotation_helper.rotate_x(deg2rad(event_y * MOUSE_SENSITIVITY * -1))
+	self.rotate_y(deg2rad(event_x * MOUSE_SENSITIVITY * -1))
+
+	var camera_rot = rotation_helper.rotation_degrees
+	camera_rot.x = clamp(camera_rot.x, -89.99, 89.99)
+	rotation_helper.rotation_degrees = camera_rot
 
 func forwardDropWeapon(weapon, pos, dir):
 	emit_signal("dropWeapon", weapon, pos, dir)
@@ -142,11 +147,12 @@ func forwardDropWeapon(weapon, pos, dir):
 func forwardShoot(pos, dir):
 	emit_signal("shoot", pos, dir)
 
-func hit(damage : float) -> void:
+remotesync func hit(damage : float) -> void:
 	health -= damage
 	if health <= 0:
 		dead = true
 		health = 0
+	print("i have been hit", health)
 
 
 func spawn() -> void:

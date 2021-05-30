@@ -17,7 +17,7 @@ func _ready():
 	#start(2)
 
 # Player info, associate ID to data
-var player_info = {}
+var player_id = {}
 # Info we send to other players
 var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
 
@@ -42,7 +42,7 @@ remote func register_player(info):
 	# Get the id of the RPC sender.
 	var id = get_tree().get_rpc_sender_id()
 	# Store the info
-	player_info[id] = info
+	player_id[id] = info
 
 
 	# Call function to update lobby UI here
@@ -60,8 +60,8 @@ func connect_to(SERVER_IP : String, SERVER_PORT : int) -> String:
 	get_tree().network_peer = peer
 	return 'connecting to server'
 
-puppet func init_game() -> String:
-	if is_network_master():
-		rpc("init_game")
+master func init_game() -> String:
+	#if is_network_master():
+	#	rpc("init_game")
 	get_tree().get_root().get_node("GameStateManager").init_game()
-	return "initalzing game"
+	return "initalizing game"

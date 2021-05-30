@@ -14,14 +14,15 @@ func attach_weapon(weapon, pos, dir) -> void:
 	weapon.dropWeapon(dir)
 	add_child(weapon)
 
-func add_player(team : int, player_id : int) -> void:
+remotesync func add_player(team : int, player_id : int) -> void:
+	print("add_player ", team, " ", player_id)
 	var player = load("res://player/Player.tscn").instance()
-	player.set_name(str(player_id))
-	player.set_network_master(player_id)
+	#player.set_name(str(player_id))
+	#player.set_network_master(player_id)
 	player.connect("dropWeapon", self, "attach_weapon")
-	player.init(team)
-	print(get_tree().get_network_unique_id())
 	add_child(player)
+	player.init(player_id, team)
+	print(player_id)
 
 	#set spawning location
 	player.translation = GlobalMapInformation.get_player_spawn(player)
@@ -54,16 +55,20 @@ puppet func restart_round():
 func _process(delta) -> void:
 	if not GameState.team_a_is_alive():
 		restart_round()
-	elif not GameState.team_b_is_alive():
+	if not GameState.team_b_is_alive():
 		restart_round()
 	pass
 
 func init_game():
-	print("init game")
-	add_player(team.A, get_tree().get_network_unique_id())
-	for player in ServerState.player_info:
-		add_player(team.B, player)
-	restart_round()
+	rpc('add_player', team.A, get_tree().get_network_unique_id())
+	#add_player(team.A, get_tree().get_network_unique_id())
+	for player in ServerState.player_id:
+		print("player ", player)
+		rpc('add_player', team.B, player)
+	GameState.changed()
+	print(GameState.team_a, GameState.team_b)
+		#add_player(team.B, player)
+	#restart_round()
 
 func reset_game():
 	restart_round()
@@ -74,4 +79,5 @@ func reset_game():
 	GameState.changed()
 
 func _player_connected(id):
-	add_player(team.B, id)
+	#add_player(team.B, id)
+	pass
