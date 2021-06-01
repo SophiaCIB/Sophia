@@ -1,4 +1,6 @@
 extends Node
+var tick : int = 0
+var time : float = 0
 enum team {A, B}
 enum side {ATTACKER, DEFENDER}
 # global win conditions
@@ -18,6 +20,15 @@ var side_team_b : int
 
 var score_team_a : int = 0
 var score_team_b : int = 0
+
+func _ready():
+	set_network_master(1)
+
+func _physics_process(delta):
+	time += delta
+	if 1/Engine.iterations_per_second >= time:
+		time -= 1/Engine.iterations_per_second
+		tick += 1
 
 func getSide(player_team : int) -> int:
 	match player_team:

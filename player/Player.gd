@@ -1,4 +1,7 @@
 extends KinematicBody
+
+var positions : PoolVector3Array = []
+
 #movement
 var skip : bool = false
 const GRAVITY = -40
@@ -34,7 +37,6 @@ onready var hud : Node = get_node(hud_path)
 
 #signals
 signal dropWeapon
-signal shoot
 
 
 
@@ -52,7 +54,7 @@ func init(player_id : int, team : int):
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	#hud.health_status_changed(health)
+	hud.health_status_changed(health)
 	#signals
 	weapon_helper.connect("dropWeapon", self, "forwardDropWeapon")
 	weapon_helper.connect("shoot", self, "forwardShoot")
@@ -102,9 +104,15 @@ func process_input(delta):
 		# ----------------------------------
 		rset("puppet_dir", dir)
 		rset("puppet_vel", vel)
+	elif get_tree().get_network_unique_id() == 1:
+		dir = puppet_dir
+		vel = puppet_vel
+		#if server -> save positions
+		positions[GameState.tick] = self.global_transform.origin
 	else:
 		dir = puppet_dir
 		vel = puppet_vel
+		
 
 func process_movement(delta):
 	dir.y = 0

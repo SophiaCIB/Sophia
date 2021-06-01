@@ -33,11 +33,10 @@ rayCastPath = NodePath("../Camera/RayCast")
 recoilHelperPath = NodePath("..")
 
 [node name="Camera" type="Camera" parent="Rotation_Helper/Recoil_Helper"]
-transform = Transform( 0.555556, 0, 0, 0, 0.555556, 0, 0, 0, 0.555556, 0, 0, 0 )
 current = true
+fov = 100.0
 
 [node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
-visible = false
 light_mask = 2
 mouse_filter = 1
 camera_path = NodePath("..")

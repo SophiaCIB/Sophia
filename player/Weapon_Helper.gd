@@ -27,7 +27,7 @@ func _ready() -> void:
 	var scifigun = load("res://weapons/sci-fi-gun/SciFiGun.tscn").instance()
 	setMainWeapon(scifigun)
 
-func _process(delta) -> void:
+func _physics_process(delta) -> void:
 	shoot()
 	decreaseLatestRecoil()
 
@@ -157,12 +157,6 @@ func checkForReload() -> bool:
 		print(handedWeapon.bullets_left_in_mag, "/", handedWeapon.spare_bullets)
 		return true
 
-remotesync func notifyShoot() -> void:
-	var pos = handedWeapon.getBulletTransform()
-	var dir = Vector2(-player.rotation_degrees.y, rotationHelper.rotation_degrees.x)
-	#signal for spawning bullet
-	emit_signal("shoot", pos, dir)
-
 remotesync func prepareShoot() -> void:
 	handedWeapon.next_shot = false
 	handedWeapon.last_shot = 0
@@ -192,11 +186,9 @@ func shoot() -> void:
 			handedWeapon.decrease_latest_recoil = false
 
 			#prepareShoot()
-			#notifyShoot()
 			#checkForHit()
 			#recoil()
 			rpc_unreliable("prepareShoot")
-			rpc_unreliable("notifyShoot")
 			rpc_unreliable("checkForHit")
 			#rpc_unreliable("recoil")
 		elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:

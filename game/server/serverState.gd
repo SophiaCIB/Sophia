@@ -17,7 +17,7 @@ func _ready():
 	#start(2)
 
 # Player info, associate ID to data
-var player_id = {}
+var player_id : Dictionary = {}
 # Info we send to other players
 var my_info = { name = "Johnson Magenta", favorite_color = Color8(255, 0, 255) }
 
