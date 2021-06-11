@@ -20,15 +20,14 @@ export var recoilHelperPath : NodePath
 onready var recoilHelper : Node = get_node(recoilHelperPath)
 
 #signals
-signal dropWeapon
 signal shoot
 
 func _ready() -> void:
 	var scifigun = load("res://weapons/sci-fi-gun/SciFiGun.tscn").instance()
+	get_parent().connect("drop_weapon", self, "drop_handed_weapon")
 	setMainWeapon(scifigun)
 
 func _physics_process(delta) -> void:
-	shoot()
 	decreaseLatestRecoil()
 
 func setMainWeapon(weapon) -> void:
@@ -40,16 +39,12 @@ func setSecondaryWeapon(weapon) -> void:
 	add_child(weapon)
 	secondaryWeapon = get_node(weapon.name)
 
-func dropHandedWeapon() -> void:
+func drop_handed_weapon() -> void:
 	#handedWeapon.queue_free()
-	#has to be changed to generic weapon
-	var weapon = load("res://weapons/sci-fi-gun/SciFiGun.tscn").instance()
-	#var weapon = handedWeapon.duplicate()
-	var pos = rotationHelper.get_global_transform()
-	var dir = Vector2(-player.rotation_degrees.y, rotationHelper.rotation_degrees.x)
-	emit_signal("dropWeapon", weapon, pos, dir) 
+	pass
 
-remotesync func recoil() -> void:
+
+func recoil() -> void:
 	#should be between 0 and 1
 	var ghostMultiplier : float = 0.5
 	recoilHelper.rotation_degrees.x += baseKnockback.x + handedWeapon.recoil_pattern[handedWeapon.latest_recoil].y * ghostMultiplier
@@ -58,7 +53,7 @@ remotesync func recoil() -> void:
 	rayCast.rotation_degrees.y += handedWeapon.recoil_pattern[handedWeapon.latest_recoil].x * (1- ghostMultiplier)
 	handedWeapon.latest_recoil += 1
 
-remotesync func checkForHit() -> void:
+func checkForHit() -> void:
 	var dmg : float = handedWeapon.base_damage
 	var hit_objects : Array = []
 	var excluded_objects : Array = [self]
@@ -157,7 +152,7 @@ func checkForReload() -> bool:
 		print(handedWeapon.bullets_left_in_mag, "/", handedWeapon.spare_bullets)
 		return true
 
-remotesync func prepareShoot() -> void:
+func prepareShoot() -> void:
 	handedWeapon.next_shot = false
 	handedWeapon.last_shot = 0
 	handedWeapon.setAnimation()
@@ -178,23 +173,22 @@ func decreaseLatestRecoil() -> void:
 		handedWeapon.decrese_recoil_steps = Vector2(0.0, 0.0)
 		# print("set back to 0")
 
-func shoot() -> void:
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED && is_network_master():
-		if Input.is_action_pressed("weapon_shoot") && handedWeapon.next_shot && !handedWeapon.reloading:
+puppetsync func shoot() -> void:	
+		if handedWeapon.next_shot && !handedWeapon.reloading:
 			if checkForReload():
 				return
 			handedWeapon.decrease_latest_recoil = false
 
-			#prepareShoot()
-			#checkForHit()
+			prepareShoot()
+			checkForHit()
 			#recoil()
-			rpc_unreliable("prepareShoot")
-			rpc_unreliable("checkForHit")
+			#rpc_unreliable_id(1, "prepareShoot")
+			#rpc_unreliable_id(1, "checkForHit")
 			#rpc_unreliable("recoil")
-		elif Input.is_action_pressed("weapon_reload") && !handedWeapon.reloading:
-			#handedWeapon.reload()
-			rpc_unreliable("handedWeapon.reload")
+
+puppetsync func reload():
+	if !handedWeapon.reloading:
+		handedWeapon.reload()
 		
-		if !Input.is_action_pressed("weapon_shoot"):
-			#handedWeapon.decrease_latest_recoil = true
-			rset_unreliable("handedWeapon.decrease_latest_recoil", true)
+puppetsync func decrease_latest_recoil():
+	handedWeapon.decrease_latest_recoil = true

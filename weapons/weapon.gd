@@ -37,6 +37,7 @@ var latest_recoil : int = 0
 var decrease_latest_recoil : bool = false
 var decrese_recoil_steps : Vector2 = Vector2(0.0, 0.0)
 
+var droppable : bool = true
 
 export var recoil_helper_path : NodePath
 onready var recoil_helper : Node = get_node(recoil_helper_path)

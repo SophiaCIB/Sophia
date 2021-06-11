@@ -25,16 +25,21 @@ func _ready():
 	set_network_master(1)
 
 func _physics_process(delta):
-	time += delta
-	if 1/Engine.iterations_per_second >= time:
-		time -= 1/Engine.iterations_per_second
-		tick += 1
+	tick += 1
+	#time += delta
+	#if 1/Engine.iterations_per_second >= time:
+	#	time -= 1/Engine.iterations_per_second
+	#	tick += 1
 
 func getSide(player_team : int) -> int:
 	match player_team:
 		team.A: return side_team_a
 		team.B: return side_team_b
 	return -1
+
+remote func reset_tick(ping):
+	if multiplayer.get_rpc_sender_id() == 1:
+		tick = - ping/2
 
 func get_team(player_team : int) -> Array:
 	match player_team:

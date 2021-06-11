@@ -1,4 +1,5 @@
 extends Node
+var ping : int
 enum argument_types {INT, FLOAT, STRING, ARRAY}
 
 var callable_by_command : Array = [
@@ -14,7 +15,7 @@ func _ready():
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	set_network_master(1)
-	#start(2)
+	connect_to('localhost', 28111)
 
 # Player info, associate ID to data
 var player_id : Dictionary = {}
@@ -56,12 +57,25 @@ func start(max_players : int) -> String:
 
 func connect_to(SERVER_IP : String, SERVER_PORT : int) -> String:
 	var peer = NetworkedMultiplayerENet.new()
+	peer.set_target_peer(peer.TARGET_PEER_SERVER)
+	peer.set_transfer_mode(peer.TRANSFER_MODE_UNRELIABLE)
 	peer.create_client(SERVER_IP, SERVER_PORT)
 	get_tree().network_peer = peer
 	return 'connecting to server'
 
-master func init_game() -> String:
+func init_game() -> String:
 	#if is_network_master():
 	#	rpc("init_game")
 	get_tree().get_root().get_node("GameStateManager").init_game()
 	return "initalizing game"
+
+remote func ping(ping):
+	self.ping = ping
+	rpc_unreliable('ping_end')
+	print(GameState.tick)
+
+remote func recieve_current_state(state : Dictionary) -> void:
+	if multiplayer.get_rpc_sender_id() == 1:
+		for player_key in state.keys():
+			if not player_key == get_tree().get_network_unique_id():
+				get_node('/root/GameStateManager/' + str(player_key)).action_log = state[player_key]

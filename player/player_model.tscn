@@ -1,16 +1,16 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://player/Player.gd" type="Script" id=1]
-[ext_resource path="res://player/HUD.tscn" type="PackedScene" id=2]
-[ext_resource path="res://player/Recoil_Helper.gd" type="Script" id=3]
-[ext_resource path="res://player/Weapon_Helper.gd" type="Script" id=4]
+[ext_resource path="res://player/Weapon_Helper.gd" type="Script" id=1]
+[ext_resource path="res://player/Recoil_Helper.gd" type="Script" id=2]
+[ext_resource path="res://player/player_model.gd" type="Script" id=3]
+[ext_resource path="res://player/HUD.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CapsuleShape" id=1]
 
 [sub_resource type="CapsuleMesh" id=2]
 
 [node name="Player" type="KinematicBody"]
-script = ExtResource( 1 )
+script = ExtResource( 3 )
 camera_path = NodePath("Rotation_Helper/Recoil_Helper/Camera")
 weapon_helper_path = NodePath("Rotation_Helper/Recoil_Helper/Weapon_Helper")
 rotation_helper_path = NodePath("Rotation_Helper")
@@ -20,13 +20,13 @@ hud_path = NodePath("Rotation_Helper/Recoil_Helper/Camera/HUD")
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2573, 0 )
 
 [node name="Recoil_Helper" type="Spatial" parent="Rotation_Helper"]
-script = ExtResource( 3 )
+script = ExtResource( 2 )
 weaponHelperPath = NodePath("Weapon_Helper")
 rayCastPath = NodePath("Camera/RayCast")
 
 [node name="Weapon_Helper" type="Spatial" parent="Rotation_Helper/Recoil_Helper"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2242, -0.268905, -0.501144 )
-script = ExtResource( 4 )
+script = ExtResource( 1 )
 playerPath = NodePath("../../..")
 rotationHelperPath = NodePath("../..")
 rayCastPath = NodePath("../Camera/RayCast")
@@ -36,7 +36,7 @@ recoilHelperPath = NodePath("..")
 current = true
 fov = 100.0
 
-[node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 2 )]
+[node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 4 )]
 light_mask = 2
 mouse_filter = 1
 camera_path = NodePath("..")
