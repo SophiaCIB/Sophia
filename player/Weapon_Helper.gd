@@ -19,6 +19,9 @@ onready var rayCast : Node = get_node(rayCastPath)
 export var recoilHelperPath : NodePath
 onready var recoilHelper : Node = get_node(recoilHelperPath)
 
+export var particlesPath : NodePath
+onready var particles : Node = get_node(particlesPath)
+
 #signals
 signal shoot
 
@@ -156,6 +159,7 @@ func prepareShoot() -> void:
 	handedWeapon.next_shot = false
 	handedWeapon.last_shot = 0
 	handedWeapon.setAnimation()
+	particles.set_emitting(true)
 
 func decreaseLatestRecoil() -> void:
 	if handedWeapon.decrease_latest_recoil && handedWeapon.latest_recoil > 0 && handedWeapon.decrese_recoil_steps == Vector2(0.0, 0.0):

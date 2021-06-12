@@ -30,10 +30,11 @@ size = Vector2( 10, 10 )
 extents = Vector3( 5, 5, 1 )
 
 [sub_resource type="BoxShape" id=7]
-extents = Vector3( 5.5, 1, 1 )
+extents = Vector3( 5.5, 4, 1 )
 
 [sub_resource type="CubeMesh" id=8]
-size = Vector3( 11, 2, 2 )
+material = ExtResource( 8 )
+size = Vector3( 11, 8, 2 )
 
 [sub_resource type="SphereMesh" id=9]
 
@@ -67,7 +68,7 @@ material/0 = null
 transform = Transform( -1, -1.62921e-06, 1.06173e-14, 0, -8.14603e-07, -0.2, 3.25841e-07, -5, 3.25841e-08, -7.5, 5, 25 )
 
 [node name="Wall1" type="MeshInstance" parent="Wall2"]
-transform = Transform( -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, -2.71051e-20, 1, 5, 5, 0 )
+transform = Transform( -1.62921e-07, -1, 8.47033e-22, 1, -1.62921e-07, 0, 0, -5.42101e-20, 1, 5, 5, 0 )
 mesh = SubResource( 3 )
 material/0 = null
 
@@ -100,22 +101,26 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -26 )
 shape = SubResource( 6 )
 
 [node name="StaticBody4" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 3.25368, 0, 0, 0, 1, 0, 3.45097, -14.941 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45097, -14.941 )
 
 [node name="CollisionShape" type="CollisionShape" parent="StaticBody4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.530507, 0 )
 shape = SubResource( 7 )
 
 [node name="MeshInstance" type="MeshInstance" parent="StaticBody4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.574098, 0 )
 mesh = SubResource( 8 )
-material/0 = ExtResource( 8 )
+material/0 = null
 
 [node name="StaticBody5" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 3.37809, 0, 0, 0, 1, 0, 3.24844, 15.2986 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.24844, 15.2986 )
 
 [node name="CollisionShape" type="CollisionShape" parent="StaticBody5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.717296, 0 )
 shape = SubResource( 7 )
 
 [node name="MeshInstance" type="MeshInstance" parent="StaticBody5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55427, 0 )
 mesh = SubResource( 8 )
 material/0 = ExtResource( 8 )
 

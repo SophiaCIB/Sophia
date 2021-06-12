@@ -198,7 +198,7 @@ func rotate_on_mouse_input(event_x, event_y):
 		self.rotation_degrees = action_log["rotation_rotation_degrees"]
 		rotation_helper.rotation_degrees = action_log["rotation_rotation_camera_rot"]
 
-func forwardDropWeapon(weapon, pos, dir):
+func forwardDropWeapon(weapon, pos, dir) -> void:
 	emit_signal("dropWeapon", weapon, pos, dir)
 
 func forwardShoot(pos, dir):
@@ -218,11 +218,11 @@ remote func spawn() -> void:
 		translation = GlobalMapInformation.get_player_spawn(self)
 		dead = false
 
-remote func update_action(action : Dictionary):
-	if multiplayer.get_rpc_sender_id() == 1:
-		action_log = action
+#remote func update_action(action : Dictionary) -> void:
+#	if multiplayer.get_rpc_sender_id() == 1:
+#		action_log = action
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	process_input(delta)
 	process_movement(delta)
 	if is_network_master():

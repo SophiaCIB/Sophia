@@ -1,5 +1,6 @@
 extends Node
 var ping : int
+var send_ping : bool = false
 enum argument_types {INT, FLOAT, STRING, ARRAY}
 
 var callable_by_command : Array = [
@@ -69,13 +70,19 @@ func init_game() -> String:
 	get_tree().get_root().get_node("GameStateManager").init_game()
 	return "initalizing game"
 
-remote func ping(ping):
+remote func recieve_ping(ping):
 	self.ping = ping
+	send_ping = true
+
+func send_ping():
 	rpc_unreliable('ping_end')
-	print(GameState.tick)
 
 remote func recieve_current_state(state : Dictionary) -> void:
 	if multiplayer.get_rpc_sender_id() == 1:
 		for player_key in state.keys():
 			if not player_key == get_tree().get_network_unique_id():
 				get_node('/root/GameStateManager/' + str(player_key)).action_log = state[player_key]
+
+func _physics_process(delta):
+	if send_ping:
+		send_ping()

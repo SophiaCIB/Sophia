@@ -15,7 +15,7 @@ func attach_weapon(weapon, pos, dir) -> void:
 	add_child(weapon)
 
 remote func add_player(team : int, player_id : int) -> void:
-	if multiplayer.get_rpc_sender_id() == 1:
+	if multiplayer.get_rpc_sender_id() == 1 or get_tree().get_network_unique_id():
 		print("add_player ", team, " ", player_id)
 		var player = load("res://player/player_model.tscn").instance()
 		#player.set_name(str(player_id))
@@ -34,7 +34,7 @@ remote func add_player(team : int, player_id : int) -> void:
 		GameState.changed()
 
 remote func add_player_model(player_id : int):
-	if multiplayer.get_rpc_sender_id() == 1:
+	if multiplayer.get_rpc_sender_id() == 1 or get_tree().get_network_unique_id():
 		var player = load("res://player/player.tscn").instance()
 		player.set_name(str(player_id))
 		player.set_network_master(player_id)
@@ -69,7 +69,8 @@ func _process(delta) -> void:
 
 func init_game():
 	#rpc('add_player', team.A, get_tree().get_network_unique_id())
-	#add_player(team.A, get_tree().get_network_unique_id())
+	print("hello")
+	add_player(team.A, get_tree().get_network_unique_id())
 	for player in ServerState.player_id:
 		print("player ", player)
 		rpc('add_player', team.B, player)
