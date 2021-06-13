@@ -11,20 +11,20 @@ top_radius = 0.05
 bottom_radius = 0.05
 height = 0.1
 
-[sub_resource type="Gradient" id=8]
+[sub_resource type="Gradient" id=3]
 offsets = PoolRealArray( 0.9, 1 )
 colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
 
-[sub_resource type="GradientTexture" id=9]
-gradient = SubResource( 8 )
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
 
-[sub_resource type="Curve" id=3]
+[sub_resource type="Curve" id=5]
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.0401234, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=4]
-curve = SubResource( 3 )
+[sub_resource type="CurveTexture" id=6]
+curve = SubResource( 5 )
 
-[sub_resource type="ParticlesMaterial" id=5]
+[sub_resource type="ParticlesMaterial" id=7]
 emission_shape = 1
 emission_sphere_radius = 1.0
 direction = Vector3( 0, 0, 0 )
@@ -34,12 +34,12 @@ initial_velocity = 0.05
 initial_velocity_random = 1.0
 angle = 360.0
 angle_random = 1.0
-scale = 2.0
+scale = 10.0
 scale_random = 1.0
-scale_curve = SubResource( 4 )
-color_ramp = SubResource( 9 )
+scale_curve = SubResource( 6 )
+color_ramp = SubResource( 4 )
 
-[sub_resource type="SpatialMaterial" id=6]
+[sub_resource type="SpatialMaterial" id=8]
 flags_transparent = true
 flags_unshaded = true
 vertex_color_use_as_albedo = true
@@ -49,8 +49,8 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 albedo_texture = ExtResource( 1 )
 
-[sub_resource type="QuadMesh" id=7]
-material = SubResource( 6 )
+[sub_resource type="QuadMesh" id=9]
+material = SubResource( 8 )
 
 [node name="Spatial" type="KinematicBody"]
 
@@ -65,8 +65,8 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0011493, -2.98023e-08, -0.00340363 )
 emitting = false
 amount = 200
-lifetime = 25.0
+lifetime = 5.0
 one_shot = true
 explosiveness = 1.0
-process_material = SubResource( 5 )
-draw_pass_1 = SubResource( 7 )
+process_material = SubResource( 7 )
+draw_pass_1 = SubResource( 9 )

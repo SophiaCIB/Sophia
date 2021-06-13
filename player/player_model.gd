@@ -3,18 +3,13 @@ extends KinematicBody
 var action_log : Dictionary = {}
 
 #movement
-var skip : bool = false
+var debug_console_opened : bool = false
 const GRAVITY = -40
 var vel = Vector3()
-# puppet var puppet_vel = Vector3()
 const MAX_SPEED = 12
 const JUMP_SPEED = 15
 const ACCEL = 4.5
 var dir = Vector3()
-# puppet var puppet_dir = Vector3()
-# puppet var puppet_pos = Vector3()
-# puppet var puppet_rot_x = Vector3()
-# puppet var puppet_rot_y = Vector3()
 const DEACCEL= 16
 const MAX_SLOPE_ANGLE = 40
 
@@ -22,7 +17,20 @@ const MAX_SLOPE_ANGLE = 40
 var health : float = 100
 var dead : bool = false
 var team : int
-
+var stats : Dictionary = {
+	'health': 100,
+	'dead': false,
+	'team': 0,
+	'money': 0,
+	'kills': 0,
+	'assists': 0,
+	'deaths': 0,
+	'points': 0,
+	'headshot_percentage': 0,
+	'blinded_enemies': 0,
+	'grenade_damage': 0,
+	'damage': 0,
+}
 
 # Player Config
 var MOUSE_SENSITIVITY : float = 0.05
@@ -71,9 +79,9 @@ func process_input(delta):
 	if is_network_master():
 		var input_movement_vector = Vector2()
 		if Input.is_action_just_released("open_debug_console"):
-			skip = true
+			debug_console_opened = true
 		
-		if !skip:
+		if !debug_console_opened:
 			if Input.is_action_pressed("movement_forward"):
 				input_movement_vector.y += 1
 			if Input.is_action_pressed("movement_backward"):
@@ -89,6 +97,10 @@ func process_input(delta):
 				action_log["weapon_drop_pos"] = pos
 				action_log["weapon_drop_dir"] = dir
 				emit_signal("drop_weapon", weapon, pos, dir)
+			if Input.is_action_just_pressed('ui_leaderboard'):
+				hud.set_leaderboard_visibility(true)
+			if Input.is_action_just_released('ui_leaderboard'):
+				hud.set_leaderboard_visibility(false)
 
 			# Jumping
 			if is_on_floor():
@@ -107,7 +119,7 @@ func process_input(delta):
 		if Input.is_action_just_pressed("ui_cancel"):
 			if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-				skip = false
+				debug_console_opened = false
 			else:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		# ----------------------------------
@@ -221,6 +233,7 @@ remote func spawn() -> void:
 #remote func update_action(action : Dictionary) -> void:
 #	if multiplayer.get_rpc_sender_id() == 1:
 #		action_log = action
+		
 
 func _physics_process(delta) -> void:
 	process_input(delta)

@@ -1,0 +1,134 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://player/HUD/fonts/standard.tres" type="DynamicFont" id=1]
+[ext_resource path="res://player/HUD/player_leaderboard/entry_advanced.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 0.392157 )
+border_color = Color( 1, 1, 1, 1 )
+
+[node name="entry" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 0.059
+margin_bottom = -38.0
+rect_min_size = Vector2( 0, 70 )
+size_flags_horizontal = 3
+size_flags_vertical = 0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+panel_path = NodePath("Panel")
+ping_path = NodePath("MarginContainer/HBoxContainer/ping")
+player_name_path = NodePath("MarginContainer/HBoxContainer/name")
+headshot_percentage_path = NodePath("MarginContainer/HBoxContainer/HBoxContainer/headshot")
+blinded_enemies_path = NodePath("MarginContainer/HBoxContainer/HBoxContainer/gg")
+grenade_damage_path = NodePath("MarginContainer/HBoxContainer/HBoxContainer/ns")
+damage_path = NodePath("MarginContainer/HBoxContainer/HBoxContainer/d")
+r2_path = NodePath("MarginContainer/HBoxContainer/HBoxContainer/r2")
+points_path = NodePath("MarginContainer/HBoxContainer/points")
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_right = -20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_right = 1880.0
+margin_bottom = 70.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ping" type="Label" parent="MarginContainer/HBoxContainer"]
+margin_top = 9.0
+margin_right = 92.0
+margin_bottom = 60.0
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 1 )
+text = "Ping"
+
+[node name="name" type="Label" parent="MarginContainer/HBoxContainer"]
+margin_left = 108.0
+margin_top = 9.0
+margin_right = 911.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "Name"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
+margin_left = 927.0
+margin_right = 1731.0
+margin_bottom = 70.0
+size_flags_horizontal = 3
+custom_constants/separation = 16
+
+[node name="headshot" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+margin_top = 9.0
+margin_right = 143.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "h%"
+
+[node name="gg" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+margin_left = 159.0
+margin_top = 9.0
+margin_right = 302.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "gg"
+
+[node name="ns" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+margin_left = 318.0
+margin_top = 9.0
+margin_right = 461.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "ns"
+
+[node name="d" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+margin_left = 477.0
+margin_top = 9.0
+margin_right = 645.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "damage"
+
+[node name="r2" type="Label" parent="MarginContainer/HBoxContainer/HBoxContainer"]
+margin_left = 661.0
+margin_top = 9.0
+margin_right = 804.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 1 )
+text = "r2.0"
+
+[node name="points" type="Label" parent="MarginContainer/HBoxContainer"]
+margin_left = 1747.0
+margin_top = 9.0
+margin_right = 1880.0
+margin_bottom = 60.0
+custom_fonts/font = ExtResource( 1 )
+text = "Points"

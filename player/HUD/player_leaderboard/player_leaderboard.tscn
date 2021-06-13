@@ -1,0 +1,136 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://player/HUD/player_leaderboard/entry_stats.tscn" type="PackedScene" id=1]
+[ext_resource path="res://player/HUD/player_leaderboard/entry_advanced.tscn" type="PackedScene" id=2]
+[ext_resource path="res://player/HUD/player_leaderboard/player_leaderboard.gd" type="Script" id=3]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0, 0, 0.588235 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[node name="leaderboard" type="Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -960.0
+margin_top = -540.0
+margin_right = 960.0
+margin_bottom = 540.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Stats" type="Tabs" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+
+[node name="GridContainer2" type="GridContainer" parent="TabContainer/Stats"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title_attacker" parent="TabContainer/Stats/GridContainer2" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1920.0
+margin_bottom = 70.0
+side = 0
+
+[node name="Attacker" type="GridContainer" parent="TabContainer/Stats/GridContainer2"]
+margin_top = 74.0
+margin_right = 1920.0
+margin_bottom = 526.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 16
+custom_constants/hseparation = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title_defender" parent="TabContainer/Stats/GridContainer2" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 530.0
+margin_right = 1920.0
+margin_bottom = 600.0
+side = 1
+
+[node name="Defender" type="GridContainer" parent="TabContainer/Stats/GridContainer2"]
+margin_top = 604.0
+margin_right = 1920.0
+margin_bottom = 1056.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 16
+custom_constants/hseparation = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Advanced" type="Tabs" parent="TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+
+[node name="GridContainer3" type="GridContainer" parent="TabContainer/Advanced"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title_attacker" parent="TabContainer/Advanced/GridContainer3" instance=ExtResource( 2 )]
+margin_top = 74.0
+margin_bottom = 82.404
+
+[node name="Attacker" type="GridContainer" parent="TabContainer/Advanced/GridContainer3"]
+margin_top = 74.0
+margin_right = 1912.0
+margin_bottom = 520.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 16
+custom_constants/hseparation = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title_defender" parent="TabContainer/Advanced/GridContainer3" instance=ExtResource( 2 )]
+side = 1
+
+[node name="Defender" type="GridContainer" parent="TabContainer/Advanced/GridContainer3"]
+margin_top = 598.0
+margin_right = 1912.0
+margin_bottom = 1044.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/vseparation = 16
+custom_constants/hseparation = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
