@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://player/Weapon_Helper.gd" type="Script" id=1]
 [ext_resource path="res://player/Recoil_Helper.gd" type="Script" id=2]
@@ -21,7 +21,11 @@ height = 0.02
 
 [sub_resource type="CapsuleShape" id=4]
 
+[sub_resource type="SpatialMaterial" id=6]
+flags_no_depth_test = true
+
 [sub_resource type="CapsuleMesh" id=5]
+material = SubResource( 6 )
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 3 )

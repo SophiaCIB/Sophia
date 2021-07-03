@@ -32,6 +32,11 @@ GlobalPlayersInformation="*res://player/global_information.gd"
 GlobalMapInformation="*res://game/general/global_map_information.gd"
 ServerState="*res://game/server/serverState.gd"
 
+[debug]
+
+settings/stdout/print_fps=true
+gdscript/completion/autocomplete_setters_and_getters=true
+
 [display]
 
 window/size/width=1920
@@ -104,6 +109,18 @@ stack_down_debug_console={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"unicode":0,"echo":false,"script":null)
  ]
 }
+ui_leaderboard={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777218,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+3d_render/layer_1="All"
+3d_physics/layer_1="All"
+3d_render/layer_2="Objects"
+3d_physics/layer_2="Objects"
 
 [physics]
 

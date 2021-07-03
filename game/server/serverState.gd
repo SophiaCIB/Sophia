@@ -1,6 +1,5 @@
 extends Node
-var ping : int
-var send_ping : bool = false
+var ping : float
 enum argument_types {INT, FLOAT, STRING, ARRAY}
 
 var callable_by_command : Array = [
@@ -54,6 +53,7 @@ func start(max_players : int) -> String:
 	var port : int = 28111
 	peer.create_server(port, max_players)
 	get_tree().network_peer = peer
+	get_tree().set_multiplayer_poll_enabled(false)
 	return 'server started with ' + str(max_players) + " on port " + str(port) 
 
 func connect_to(SERVER_IP : String, SERVER_PORT : int) -> String:
@@ -62,6 +62,7 @@ func connect_to(SERVER_IP : String, SERVER_PORT : int) -> String:
 	peer.set_transfer_mode(peer.TRANSFER_MODE_UNRELIABLE)
 	peer.create_client(SERVER_IP, SERVER_PORT)
 	get_tree().network_peer = peer
+	get_tree().set_multiplayer_poll_enabled(false)
 	return 'connecting to server'
 
 func init_game() -> String:
@@ -70,19 +71,19 @@ func init_game() -> String:
 	get_tree().get_root().get_node("GameStateManager").init_game()
 	return "initalizing game"
 
-remote func recieve_ping(ping):
-	self.ping = ping
-	send_ping = true
-
-func send_ping():
+remote func recieve_ping(average_ping : float) -> void:
+	if not average_ping == -1.0:
+		self.ping = average_ping
 	rpc_unreliable('ping_end')
+	print('recieving ping: ', ping)
 
 remote func recieve_current_state(state : Dictionary) -> void:
 	if multiplayer.get_rpc_sender_id() == 1:
 		for player_key in state.keys():
 			if not player_key == get_tree().get_network_unique_id():
-				get_node('/root/GameStateManager/' + str(player_key)).action_log = state[player_key]
+				get_node('/root/GameStateManager/' + str(player_key)).last_action = state[player_key]
+			else:
+				get_node('/root/GameStateManager/' + str(player_key)).server_confirmation_recieved(state[player_key])
 
 func _physics_process(delta):
-	if send_ping:
-		send_ping()
+	get_tree().multiplayer.poll()

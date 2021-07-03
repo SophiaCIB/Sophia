@@ -33,13 +33,6 @@ remote func add_player(team : int, player_id : int) -> void:
 			pass
 		GameState.changed()
 
-remote func add_player_model(player_id : int):
-	if multiplayer.get_rpc_sender_id() == 1 or get_tree().get_network_unique_id():
-		var player = load("res://player/player.tscn").instance()
-		player.set_name(str(player_id))
-		player.set_network_master(player_id)
-		add_child(player)
-
 func set_win_condition(path : String) -> void:
 	var file = File.new()
 	file.open(path, file.READ)

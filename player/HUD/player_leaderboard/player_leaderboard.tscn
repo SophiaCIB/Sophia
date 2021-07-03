@@ -1,13 +1,29 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://player/HUD/player_leaderboard/entry_stats.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/HUD/player_leaderboard/entry_advanced.tscn" type="PackedScene" id=2]
 [ext_resource path="res://player/HUD/player_leaderboard/player_leaderboard.gd" type="Script" id=3]
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float blur : hint_range(0,6) = 0.5;
+
+void fragment() {
+	vec4 color = texture(SCREEN_TEXTURE, SCREEN_UV, blur);
+	COLOR = color;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/blur = 0.5
+
+[sub_resource type="StreamTexture" id=3]
+
+[sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 0, 0, 0, 0.588235 )
 
-[sub_resource type="StyleBoxFlat" id=1]
+[sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [node name="leaderboard" type="Control"]
@@ -24,10 +40,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_styles/panel = SubResource( 2 )
+custom_styles/panel = SubResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -35,7 +62,7 @@ __meta__ = {
 [node name="TabContainer" type="TabContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_styles/panel = SubResource( 1 )
+custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

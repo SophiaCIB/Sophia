@@ -21,15 +21,17 @@ var side_team_b : int
 var score_team_a : int = 0
 var score_team_b : int = 0
 
+signal changed
+
 func _ready():
 	set_network_master(1)
 
 func _physics_process(delta):
-	tick += 1
-	#time += delta
-	#if 1/Engine.iterations_per_second >= time:
-	#	time -= 1/Engine.iterations_per_second
-	#	tick += 1
+	#tick += 1
+	time += delta
+	if 1/128 <= time:
+		time = time - 0.0078125
+		tick += 1
 
 func getSide(player_team : int) -> int:
 	match player_team:
@@ -37,9 +39,10 @@ func getSide(player_team : int) -> int:
 		team.B: return side_team_b
 	return -1
 
-remote func reset_tick(ping):
+remote func reset_tick(new_tick: int, average_ping : float):
+	print('resetting tick: ', new_tick, ' ', average_ping)
 	if multiplayer.get_rpc_sender_id() == 1:
-		tick = - ping/2
+		tick = new_tick + ceil(average_ping / 2) 
 
 func get_team(player_team : int) -> Array:
 	match player_team:
@@ -50,6 +53,7 @@ func get_team(player_team : int) -> Array:
 func changed() -> void:
 	team_a = get_tree().get_nodes_in_group("team0")
 	team_b = get_tree().get_nodes_in_group("team1")
+	emit_signal('changed')
 
 func team_a_is_alive() -> bool:
 	if team_a.size() > 0:
