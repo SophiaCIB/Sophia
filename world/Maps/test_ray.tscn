@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://world/Maps/RayCast.gd" type="Script" id=1]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 5, 5, 5 )
+
+[sub_resource type="SphereMesh" id=2]
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 0.1, 2.5, 2.5 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="StaticBody" type="Spatial" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="StaticBody"]
+visible = false
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="RayCast" type="RayCast" parent="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.98505, 0, 0 )
+enabled = true
+exclude_parent = false
+cast_to = Vector3( 11.646, 0, 0 )
+script = ExtResource( 1 )
+
+[node name="CSGMesh" type="CSGMesh" parent="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 0 )
+mesh = SubResource( 2 )
+
+[node name="StaticBody" type="StaticBody" parent="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0, 0 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="StaticBody/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="StaticBody2" type="StaticBody" parent="StaticBody"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody/StaticBody2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0, 0 )
+shape = SubResource( 3 )

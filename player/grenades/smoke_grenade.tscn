@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://material/particeles/PNG (Transparent)/smoke_04.png" type="Texture" id=1]
+
+[sub_resource type="CylinderShape" id=1]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="CylinderMesh" id=2]
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.1
+
+[sub_resource type="Gradient" id=3]
+offsets = PoolRealArray( 0.9, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
+
+[sub_resource type="Curve" id=5]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.0401234, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=6]
+curve = SubResource( 5 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 0.05
+initial_velocity_random = 1.0
+angle = 360.0
+angle_random = 1.0
+scale = 10.0
+scale_random = 1.0
+scale_curve = SubResource( 6 )
+color_ramp = SubResource( 4 )
+
+[sub_resource type="SpatialMaterial" id=8]
+flags_transparent = true
+flags_unshaded = true
+vertex_color_use_as_albedo = true
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_texture = ExtResource( 1 )
+
+[sub_resource type="QuadMesh" id=9]
+material = SubResource( 8 )
+
+[node name="Spatial" type="KinematicBody"]
+
+[node name="KinematicBody" type="CollisionShape" parent="."]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Particles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0011493, -2.98023e-08, -0.00340363 )
+emitting = false
+amount = 200
+lifetime = 5.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 7 )
+draw_pass_1 = SubResource( 9 )

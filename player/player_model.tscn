@@ -1,0 +1,83 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://player/Weapon_Helper.gd" type="Script" id=1]
+[ext_resource path="res://player/Recoil_Helper.gd" type="Script" id=2]
+[ext_resource path="res://player/player_model.gd" type="Script" id=3]
+[ext_resource path="res://player/HUD.tscn" type="PackedScene" id=4]
+
+[sub_resource type="ParticlesMaterial" id=1]
+direction = Vector3( 0, 0, -1 )
+spread = 0.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+
+[sub_resource type="SphereMesh" id=3]
+material = SubResource( 2 )
+radius = 0.01
+height = 0.02
+
+[sub_resource type="CapsuleShape" id=4]
+
+[sub_resource type="SpatialMaterial" id=6]
+flags_no_depth_test = true
+
+[sub_resource type="CapsuleMesh" id=5]
+material = SubResource( 6 )
+
+[node name="Player" type="KinematicBody"]
+script = ExtResource( 3 )
+camera_path = NodePath("Rotation_Helper/Recoil_Helper/Camera")
+weapon_helper_path = NodePath("Rotation_Helper/Recoil_Helper/Weapon_Helper")
+rotation_helper_path = NodePath("Rotation_Helper")
+hud_path = NodePath("Rotation_Helper/Recoil_Helper/Camera/HUD")
+
+[node name="Rotation_Helper" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2573, 0 )
+
+[node name="Recoil_Helper" type="Spatial" parent="Rotation_Helper"]
+script = ExtResource( 2 )
+weaponHelperPath = NodePath("Weapon_Helper")
+rayCastPath = NodePath("Camera/RayCast")
+
+[node name="Weapon_Helper" type="Spatial" parent="Rotation_Helper/Recoil_Helper"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2242, -0.268905, -0.501144 )
+script = ExtResource( 1 )
+playerPath = NodePath("../../..")
+rotationHelperPath = NodePath("../..")
+rayCastPath = NodePath("../Camera/RayCast")
+recoilHelperPath = NodePath("..")
+particlesPath = NodePath("../Camera/Particles")
+
+[node name="Camera" type="Camera" parent="Rotation_Helper/Recoil_Helper"]
+current = true
+fov = 100.0
+
+[node name="HUD" parent="Rotation_Helper/Recoil_Helper/Camera" instance=ExtResource( 4 )]
+light_mask = 2
+mouse_filter = 1
+camera_path = NodePath("..")
+healt_bar_path = NodePath("")
+
+[node name="RayCast" type="RayCast" parent="Rotation_Helper/Recoil_Helper/Camera"]
+enabled = true
+cast_to = Vector3( 0, 0, -50 )
+collide_with_areas = true
+
+[node name="Particles" type="Particles" parent="Rotation_Helper/Recoil_Helper/Camera"]
+emitting = false
+amount = 1
+local_coords = false
+process_material = SubResource( 1 )
+draw_pass_1 = SubResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.5, 0 )
+shape = SubResource( 4 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 1.5, 0 )
+mesh = SubResource( 5 )
+material/0 = null
